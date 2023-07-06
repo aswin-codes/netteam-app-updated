@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +18,9 @@ class AboutYou extends StatelessWidget {
             color: Colors.white,
             size: 20.h,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/search');
+          },
         ),
         automaticallyImplyLeading: false,
         title: Text(
@@ -116,7 +117,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   PageController pageController = PageController(initialPage: 0);
-  int pageIndex = 0 ;
+  int pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -283,12 +284,16 @@ class _BodyState extends State<Body> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Image.asset(
-                  (pageIndex == 0) ? "assets/icons/posts_white.png" : "assets/icons/posts_grey.png",
+                  (pageIndex == 0)
+                      ? "assets/icons/posts_white.png"
+                      : "assets/icons/posts_grey.png",
                   height: 15.h,
                   width: 15.h,
                 ),
                 Image.asset(
-                  (pageIndex == 1 ) ? "assets/icons/private_white.png" : "assets/icons/private_grey.png",
+                  (pageIndex == 1)
+                      ? "assets/icons/private_white.png"
+                      : "assets/icons/private_grey.png",
                   height: 20.h,
                   width: 20.h,
                 ),

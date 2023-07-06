@@ -11,6 +11,7 @@ import 'package:netteam/screens/Live.dart';
 import 'package:netteam/screens/PricingPlans.dart';
 import 'package:netteam/screens/Profile.dart';
 import 'package:netteam/screens/ResetPassword.dart';
+import 'package:netteam/screens/Search.dart';
 import 'package:netteam/screens/Verify.dart';
 import 'package:netteam/screens/Video15.dart';
 import 'package:netteam/screens/Video3m.dart';
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
           ),
-          initialRoute: "/splash",
+          initialRoute: "/aboutyou",
           routes: {
             "/splash": (context) => const SplashScreen(),
             "/": (context) => const Home(),
@@ -85,7 +86,8 @@ class MyApp extends StatelessWidget {
             "/profile" : (context) => const Profile(),
             "/pricingplans": (context) =>  PricingPlans(),
             "/aboutyou" : (context) => const AboutYou(),
-            "/create" : (context) => CreateVideo(cameras: cameras,)
+            "/create" : (context) => CreateVideo(cameras: cameras,),
+            "/search" : (context) => const Search()
           },
         );
       },
