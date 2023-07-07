@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:netteam/screens/Search.dart';
 
-class AboutYou extends StatelessWidget {
-  const AboutYou({Key? key}) : super(key: key);
+class UserProfile extends StatelessWidget {
+  const UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final User _user = ModalRoute.of(context)!.settings.arguments as User;
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -24,7 +26,7 @@ class AboutYou extends StatelessWidget {
         ),
         automaticallyImplyLeading: false,
         title: Text(
-          "Aswin Raaj",
+          _user.userName,
           style: GoogleFonts.roboto(
               fontSize: 17.sp,
               color: Colors.white,
@@ -41,7 +43,9 @@ class AboutYou extends StatelessWidget {
               ))
         ],
       ),
-      body: Body(),
+      body: Body(
+        user: _user,
+      ),
       backgroundColor: const Color(0xFF0E0B1F),
       bottomNavigationBar: BottomAppBar(
         elevation: 0.0,
@@ -109,13 +113,15 @@ class AboutYou extends StatelessWidget {
 }
 
 class Body extends StatefulWidget {
-  const Body({Key? key}) : super(key: key);
+  User user;
+  Body({Key? key, required this.user}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
+  bool isFollowing = true;
   PageController pageController = PageController(initialPage: 0);
   int pageIndex = 0;
 
@@ -133,14 +139,29 @@ class _BodyState extends State<Body> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
-                    radius: 48.r,
-                    backgroundImage: AssetImage("assets/images/profile4.png")),
+                GestureDetector(
+                  onTap: () {
+                    if (widget.user.isLive) {
+                      Navigator.pushNamed(context, '/viewerslive');
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: (widget.user.isLive)
+                            ? Border.all(
+                                width: 5.0, color: const Color(0xFF1EA7D7))
+                            : Border.all()),
+                    child: CircleAvatar(
+                        radius: 48.r,
+                        backgroundImage: AssetImage(widget.user.imagePath)),
+                  ),
+                ),
                 SizedBox(
                   height: 10.h,
                 ),
                 Text(
-                  "@iamaswin",
+                  widget.user.userId,
                   style: GoogleFonts.roboto(
                       fontSize: 17.sp,
                       fontWeight: FontWeight.w400,
@@ -230,40 +251,57 @@ class _BodyState extends State<Body> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
-                          border: Border.all(color: Colors.white, width: 1)),
+                      decoration: (isFollowing)
+                          ? BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.r)),
+                              border: Border.all(color: Colors.white, width: 1))
+                          : BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.r)),
+                            ),
                       height: 36.h,
-                      width: 150.w,
+                      width: 125.w,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           elevation: MaterialStateProperty.all(0.0),
                           backgroundColor:
                               MaterialStateProperty.all(Colors.transparent),
                         ),
-                        child: Text("Edit Profile"),
+                        child: Text(
+                          isFollowing ? "Following" : "Follow",
+                          style: (isFollowing)
+                              ? GoogleFonts.poppins(color: Colors.white)
+                              : GoogleFonts.poppins(color: Colors.black),
+                        ),
                         onPressed: () {
-                          Navigator.pushNamed(context, "/profile");
+                          setState(() {
+                            isFollowing = !isFollowing;
+                          });
+                          print(isFollowing);
                         },
                       ),
                     ),
                     SizedBox(
                       width: 10.w,
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.r)),
-                            border: Border.all(color: Colors.white, width: 1)),
-                        height: 36.h,
-                        width: 36.h,
-                        child: Icon(
-                          Icons.bookmark_outline,
-                          size: 20.h,
-                          color: Colors.white,
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5.r)),
+                          border: Border.all(color: Colors.white, width: 1)),
+                      height: 36.h,
+                      width: 125.w,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(0.0),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.transparent),
                         ),
+                        child: Text("Message"),
+                        onPressed: () {
+                          //Navigate to chat screen
+                        },
                       ),
                     ),
                   ],
@@ -363,5 +401,3 @@ class _BodyState extends State<Body> {
     ));
   }
 }
-
-

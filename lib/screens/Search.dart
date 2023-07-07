@@ -147,40 +147,45 @@ class _SearchState extends State<Search> {
                   itemCount: _userList.length,
                   itemBuilder: (BuildContext context, int index) {
                     User user = _userList[index];
-                    return ListTile(
-                      contentPadding: const EdgeInsets.only(bottom: 10),
-                      leading: user.isLive
-                          ? Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 5,
-                                  color: const Color(0xFF1EA7D7),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/userprofile', arguments: user);
+                      },
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.only(bottom: 10),
+                        leading: user.isLive
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    width: 5,
+                                    color: const Color(0xFF1EA7D7),
+                                  ),
                                 ),
-                              ),
-                              child: CircleAvatar(
-                                radius: 27,
+                                child: CircleAvatar(
+                                  radius: 27,
+                                  backgroundImage: AssetImage(user.imagePath),
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 33,
                                 backgroundImage: AssetImage(user.imagePath),
                               ),
-                            )
-                          : CircleAvatar(
-                              radius: 33,
-                              backgroundImage: AssetImage(user.imagePath),
-                            ),
-                      title: Text(
-                        user.userId,
-                        style: GoogleFonts.poppins(
-                          fontSize: 17.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                        title: Text(
+                          user.userId,
+                          style: GoogleFonts.poppins(
+                            fontSize: 17.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      subtitle: Text(
-                        user.userName,
-                        style: GoogleFonts.poppins(
-                          fontSize: 15.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
+                        subtitle: Text(
+                          user.userName,
+                          style: GoogleFonts.poppins(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     );

@@ -12,12 +12,14 @@ import 'package:netteam/screens/PricingPlans.dart';
 import 'package:netteam/screens/Profile.dart';
 import 'package:netteam/screens/ResetPassword.dart';
 import 'package:netteam/screens/Search.dart';
+import 'package:netteam/screens/UserProfile.dart';
 import 'package:netteam/screens/Verify.dart';
 import 'package:netteam/screens/Video15.dart';
 import 'package:netteam/screens/Video3m.dart';
 import 'package:netteam/screens/Video60.dart';
 import 'package:netteam/screens/VideoSet.dart';
 import 'package:netteam/screens/CreateVideo.dart';
+import 'package:netteam/screens/ViewersLive.dart';
 import 'package:netteam/screens/login.dart';
 import 'package:netteam/screens/signup.dart';
 import 'package:netteam/screens/splashscreen.dart';
@@ -87,7 +89,9 @@ class MyApp extends StatelessWidget {
             "/pricingplans": (context) =>  PricingPlans(),
             "/aboutyou" : (context) => const AboutYou(),
             "/create" : (context) => CreateVideo(cameras: cameras,),
-            "/search" : (context) => const Search()
+            "/search" : (context) => const Search(),
+            "/userprofile" : (context) => const UserProfile(),
+            "/viewerslive" : (context) =>const ViewersLive()
           },
         );
       },
