@@ -50,7 +50,16 @@ class _ViewersLiveState extends State<ViewersLive> {
       });
       _textEditingController.text = '';
       FocusScope.of(context).unfocus();
-      _scrollToBottom();
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        if (mounted) {
+          // Check again before scrolling to avoid calling setState on a disposed widget
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     }
   }
 
@@ -148,7 +157,7 @@ class _ViewersLiveState extends State<ViewersLive> {
                                   width: 3,
                                 ),
                                 Text(
-                                  "Live",
+                                  "143",
                                   style: GoogleFonts.roboto(
                                       fontSize: 15.sp,
                                       color: Colors.white,
@@ -183,14 +192,10 @@ class _ViewersLiveState extends State<ViewersLive> {
                   ],
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 20
-                      )
-                    ]
-                  ),
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.15), blurRadius: 20)
+                  ]),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,7 +213,8 @@ class _ViewersLiveState extends State<ViewersLive> {
                                   return ListTile(
                                     leading: CircleAvatar(
                                       radius: 25.r,
-                                      backgroundImage: AssetImage(chat.imageUrl),
+                                      backgroundImage:
+                                          AssetImage(chat.imageUrl),
                                     ),
                                     title: Text(
                                       chat.userName,
@@ -254,7 +260,8 @@ class _ViewersLiveState extends State<ViewersLive> {
                                             fontWeight: FontWeight.bold),
                                         border: const OutlineInputBorder(
                                           borderSide: BorderSide(
-                                              color: Color.fromRGBO(0, 0, 0, 0)),
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 0)),
                                         ),
                                         enabledBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
@@ -304,6 +311,14 @@ class _ViewersLiveState extends State<ViewersLive> {
                                   color: Colors.white,
                                   size: 40.h)),
                           GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (BuildContext context) {
+                                    return SuperChat();
+                                  });
+                            },
                             child: Image.asset(
                               "assets/icons/superChat.png",
                               height: 50.h,
@@ -318,6 +333,621 @@ class _ViewersLiveState extends State<ViewersLive> {
               ],
             ),
           )),
+        ],
+      ),
+    );
+  }
+}
+
+class SuperChat extends StatefulWidget {
+  const SuperChat({Key? key}) : super(key: key);
+
+  @override
+  State<SuperChat> createState() => _SuperChatState();
+}
+
+class _SuperChatState extends State<SuperChat> {
+  final PageController _controller = PageController();
+  double _sliderValue = 0;
+
+  //This is for the stickers
+  bool isSelected1 = false;
+  bool isSelected2 = false;
+  bool isSelected3 = false;
+  bool isSelected4 = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFF1F1F1F),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 24.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Send a Super Chat?",
+                style: GoogleFonts.roboto(
+                  fontSize: 20.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.close, size: 24, color: Colors.white),
+              ),
+            ],
+          ),
+          const Divider(color: Colors.white),
+          SizedBox(height: 5.h),
+          SizedBox(
+            height: 204.h,
+            child: PageView(
+              onPageChanged: (_) {
+                setState(() {
+                  _sliderValue = _ * 25;
+                });
+              },
+              controller: _controller,
+              children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 360.w,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.push_pin_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            "Just highlights your chat in the live chat\nsection",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF55ACEE),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 10,
+                                backgroundImage:
+                                    AssetImage("assets/images/profile1.png"),
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                "@iamaswin",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.white,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "\$10",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.white),
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: "Enter your chat...",
+                              hintStyle: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                color: Color.fromRGBO(48, 48, 48, 0.61),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Text(
+                      "\$10",
+                      style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 360.w,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.push_pin_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            "Send sticker along the live chat.",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    SizedBox(
+                      height: 76.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected1 = true;
+                                isSelected2 = false;
+                                isSelected3 = false;
+                                isSelected4 = false;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected1
+                                    ? const Color(0xFF1EA7D7).withOpacity(0.57)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Image.asset(
+                                "assets/images/sticker_1.png",
+                                height: 74.h,
+                                width: 74.h,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected1 = false;
+                                isSelected2 = true;
+                                isSelected3 = false;
+                                isSelected4 = false;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected2
+                                    ? const Color(0xFF1EA7D7).withOpacity(0.57)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Image.asset(
+                                "assets/images/sticker_2.png",
+                                height: 74.h,
+                                width: 74.h,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected1 = false;
+                                isSelected2 = false;
+                                isSelected3 = true;
+                                isSelected4 = false;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected3
+                                    ? const Color(0xFF1EA7D7).withOpacity(0.57)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Image.asset(
+                                "assets/images/sticker_1.png",
+                                height: 74.h,
+                                width: 74.h,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected1 = false;
+                                isSelected2 = false;
+                                isSelected3 = false;
+                                isSelected4 = true;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected4
+                                    ? const Color(0xFF1EA7D7).withOpacity(0.57)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Image.asset(
+                                "assets/images/sticker_4.png",
+                                height: 74.h,
+                                width: 74.h,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25.h,
+                    ),
+                    Text(
+                      "\$20",
+                      style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 360.w,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.push_pin_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            "Highlights your chat on top of live chat \nuntil the creator replies",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF55ACEE),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 10,
+                                backgroundImage:
+                                    AssetImage("assets/images/profile1.png"),
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                "@iamaswin",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.white,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "\$50",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.white),
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: "Enter your chat...",
+                              hintStyle: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                color: Color.fromRGBO(48, 48, 48, 0.61),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Text(
+                      "\$50",
+                      style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 360.w,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.push_pin_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            "Highlights your chat on top of live chat \neven after the creator replies and \nstays there for 10 mins",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF55ACEE),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 10,
+                                backgroundImage:
+                                    AssetImage("assets/images/profile1.png"),
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                "@iamaswin",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.white,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "\$100",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.white),
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: "Enter your chat...",
+                              hintStyle: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                color: Color.fromRGBO(48, 48, 48, 0.61),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Text(
+                      "\$100",
+                      style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: 360.w,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.push_pin_outlined,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            "Highlights your chat on top of live chat \neven after the creator replies \nand stays there for 1 hour",
+                            style: GoogleFonts.roboto(
+                              fontSize: 15.sp,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF55ACEE),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 10,
+                                backgroundImage:
+                                    AssetImage("assets/images/profile1.png"),
+                              ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                "@iamaswin",
+                                style: GoogleFonts.roboto(
+                                  color: Colors.white,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "\$250",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.white),
+                          TextField(
+                            decoration: InputDecoration(
+                              hintText: "Enter your chat...",
+                              hintStyle: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                color: Color.fromRGBO(48, 48, 48, 0.61),
+                                fontWeight: FontWeight.w400,
+                              ),
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    Text(
+                      "\$250",
+                      style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 15.h,
+          ),
+          Slider(
+            value: _sliderValue,
+            onChanged: (_) {
+              _controller.animateToPage(_ ~/ 25,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut);
+              setState(() {
+                _sliderValue = _;
+              });
+            },
+            max: 100,
+            divisions: 4,
+          ),
+          SizedBox(
+            height: 15.h,
+          ),
+          ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: ElevatedButton(
+                  style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(Size(364.w, 33.h)),
+                      backgroundColor:
+                          MaterialStateProperty.all(const Color(0xFF001AFF))),
+                  onPressed: () {},
+                  child: Text(
+                    "Buy and Send",
+                    style: GoogleFonts.roboto(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),
+                  )))
         ],
       ),
     );
