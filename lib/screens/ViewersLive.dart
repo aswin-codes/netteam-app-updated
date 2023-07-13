@@ -12,12 +12,48 @@ class ViewersLive extends StatefulWidget {
   State<ViewersLive> createState() => _ViewersLiveState();
 }
 
+class PremiumChat extends LiveChat {
+  bool isPremium;
+  bool isSticker;
+  String stickerPath;
+  PremiumChat({
+    required String userName,
+    required String imageUrl,
+    required String chat,
+    required this.isPremium,
+    required this.isSticker,
+    required this.stickerPath,
+  }) : super(userName: userName, imageUrl: imageUrl, chat: chat);
+}
+
+class SuperPremiumChat extends PremiumChat {
+  Duration duration;
+  SuperPremiumChat(
+      {required this.duration,
+      required String userName,
+      required String imageUrl,
+      required String chat,
+      required bool isPremium,
+      required bool isSticker,
+      required String stickerPath})
+      : super(
+            userName: userName,
+            imageUrl: imageUrl,
+            chat: chat,
+            isPremium: isPremium,
+            isSticker: isSticker,
+            stickerPath: stickerPath);
+}
+
 class _ViewersLiveState extends State<ViewersLive> {
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _premiumScrollController = ScrollController();
   bool isLiked = false;
 
-  final List<LiveChat> _chatList = <LiveChat>[
+  final List<SuperPremiumChat> _superPremiumChatList = [];
+
+  final List<dynamic> _chatList = <dynamic>[
     LiveChat(
         userName: "iamraj",
         imageUrl: "assets/images/profile1.png",
@@ -61,6 +97,38 @@ class _ViewersLiveState extends State<ViewersLive> {
         }
       });
     }
+  }
+
+  void addBasicPremiumChat(PremiumChat chat) {
+    setState(() {
+      _chatList.add(chat);
+    });
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (mounted) {
+        // Check again before scrolling to avoid calling setState on a disposed widget
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  void addSuperPremiumChat(SuperPremiumChat chat) {
+    setState(() {
+      _superPremiumChatList.add(chat);
+    });
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (mounted) {
+        // Check again before scrolling to avoid calling setState on a disposed widget
+        _premiumScrollController.animateTo(
+          _premiumScrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -203,34 +271,130 @@ class _ViewersLiveState extends State<ViewersLive> {
                       Column(
                         children: [
                           SizedBox(
+                              height: 100.h,
+                              width: 290.w,
+                              child: ListView.builder(
+                                  controller: _premiumScrollController,
+                                  itemCount: _superPremiumChatList.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    SuperPremiumChat chat =
+                                        _superPremiumChatList[index];
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 25.r,
+                                        backgroundImage:
+                                            AssetImage(chat.imageUrl),
+                                      ),
+                                      title: Text(
+                                        chat.userName,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 15.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      subtitle: Text(
+                                        chat.chat,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 15.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    );
+                                  })),
+                          SizedBox(
                             height: 200.h,
                             width: 290.w,
                             child: ListView.builder(
                                 controller: _scrollController,
                                 itemCount: _chatList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  LiveChat chat = _chatList[index];
-                                  return ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 25.r,
-                                      backgroundImage:
-                                          AssetImage(chat.imageUrl),
-                                    ),
-                                    title: Text(
-                                      chat.userName,
-                                      style: GoogleFonts.roboto(
-                                          fontSize: 15.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    subtitle: Text(
-                                      chat.chat,
-                                      style: GoogleFonts.roboto(
-                                          fontSize: 15.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  );
+                                  dynamic chat = _chatList[index];
+                                  if (chat.runtimeType == LiveChat) {
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 25.r,
+                                        backgroundImage:
+                                            AssetImage(chat.imageUrl),
+                                      ),
+                                      title: Text(
+                                        chat.userName,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 15.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      subtitle: Text(
+                                        chat.chat,
+                                        style: GoogleFonts.roboto(
+                                            fontSize: 15.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    );
+                                  } else if ((chat.runtimeType ==
+                                          PremiumChat) &&
+                                      !(chat.isSticker)) {
+                                    return Container(
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                          color: const Color(0xFF55ACEE),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 25.r,
+                                          backgroundImage:
+                                              AssetImage(chat.imageUrl),
+                                        ),
+                                        title: Text(
+                                          chat.userName,
+                                          style: GoogleFonts.roboto(
+                                              fontSize: 15.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        subtitle: Text(
+                                          chat.chat,
+                                          style: GoogleFonts.roboto(
+                                              fontSize: 15.sp,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ),
+                                    );
+                                  } else if ((chat.runtimeType ==
+                                          PremiumChat) &&
+                                      (chat.isSticker)) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(left: 15.w),
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 25.r,
+                                              backgroundImage:
+                                                  AssetImage(chat.imageUrl),
+                                            ),
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  chat.userName,
+                                                  style: GoogleFonts.roboto(
+                                                      fontSize: 15.sp,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                Image.asset(chat.stickerPath,
+                                                    height: 100, width: 100)
+                                              ],
+                                            ),
+                                          ]),
+                                    );
+                                  }
                                 }),
                           ),
                           Container(
@@ -316,7 +480,11 @@ class _ViewersLiveState extends State<ViewersLive> {
                                   context: context,
                                   backgroundColor: Colors.transparent,
                                   builder: (BuildContext context) {
-                                    return SuperChat();
+                                    return SuperChat(
+                                        addBasicPremiumChat:
+                                            addBasicPremiumChat,
+                                        addSuperPremiumChat:
+                                            addSuperPremiumChat);
                                   });
                             },
                             child: Image.asset(
@@ -340,21 +508,64 @@ class _ViewersLiveState extends State<ViewersLive> {
 }
 
 class SuperChat extends StatefulWidget {
-  const SuperChat({Key? key}) : super(key: key);
+  final void Function(PremiumChat) addBasicPremiumChat;
+  final void Function(SuperPremiumChat) addSuperPremiumChat;
+  const SuperChat(
+      {Key? key,
+      required this.addBasicPremiumChat,
+      required this.addSuperPremiumChat})
+      : super(key: key);
 
   @override
   State<SuperChat> createState() => _SuperChatState();
 }
 
 class _SuperChatState extends State<SuperChat> {
+  final TextEditingController _inputController = TextEditingController();
   final PageController _controller = PageController();
   double _sliderValue = 0;
+  String stickerPath = '';
 
   //This is for the stickers
   bool isSelected1 = false;
   bool isSelected2 = false;
   bool isSelected3 = false;
   bool isSelected4 = false;
+
+  //For the 10 Dollar Super Chat
+  void add10Chat(String chat) {
+    widget.addBasicPremiumChat(PremiumChat(
+      userName: "iamaswin",
+      imageUrl: "assets/images/profile1.png",
+      chat: chat,
+      isPremium: true,
+      isSticker: false,
+      stickerPath: '',
+    ));
+  }
+
+  //For the 20 Dollar Super Chat
+  void add20Chat() {
+    widget.addBasicPremiumChat(PremiumChat(
+        userName: 'iamaswim',
+        imageUrl: 'assets/images/profile1.png',
+        chat: '',
+        isPremium: true,
+        isSticker: true,
+        stickerPath: stickerPath));
+  }
+
+  //For other Super Chats
+  void addOtherChats(Duration duration, String chat) {
+    widget.addSuperPremiumChat(SuperPremiumChat(
+        userName: 'iamaswim',
+        imageUrl: 'assets/images/profile1.png',
+        chat: chat,
+        isPremium: true,
+        isSticker: true,
+        stickerPath: '',
+        duration: duration));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -464,6 +675,7 @@ class _SuperChatState extends State<SuperChat> {
                           ),
                           const Divider(color: Colors.white),
                           TextField(
+                            controller: _inputController,
                             decoration: InputDecoration(
                               hintText: "Enter your chat...",
                               hintStyle: GoogleFonts.roboto(
@@ -532,6 +744,7 @@ class _SuperChatState extends State<SuperChat> {
                                 isSelected2 = false;
                                 isSelected3 = false;
                                 isSelected4 = false;
+                                stickerPath = "assets/images/sticker_1.png";
                               });
                             },
                             child: Container(
@@ -555,6 +768,7 @@ class _SuperChatState extends State<SuperChat> {
                                 isSelected2 = true;
                                 isSelected3 = false;
                                 isSelected4 = false;
+                                stickerPath = "assets/images/sticker_2.png";
                               });
                             },
                             child: Container(
@@ -578,6 +792,7 @@ class _SuperChatState extends State<SuperChat> {
                                 isSelected2 = false;
                                 isSelected3 = true;
                                 isSelected4 = false;
+                                stickerPath = "assets/images/sticker_3.png";
                               });
                             },
                             child: Container(
@@ -588,7 +803,7 @@ class _SuperChatState extends State<SuperChat> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Image.asset(
-                                "assets/images/sticker_1.png",
+                                "assets/images/sticker_3.png",
                                 height: 74.h,
                                 width: 74.h,
                               ),
@@ -601,6 +816,7 @@ class _SuperChatState extends State<SuperChat> {
                                 isSelected2 = false;
                                 isSelected3 = false;
                                 isSelected4 = true;
+                                stickerPath = "assets/images/sticker_4.png";
                               });
                             },
                             child: Container(
@@ -695,6 +911,7 @@ class _SuperChatState extends State<SuperChat> {
                           ),
                           const Divider(color: Colors.white),
                           TextField(
+                            controller: _inputController,
                             decoration: InputDecoration(
                               hintText: "Enter your chat...",
                               hintStyle: GoogleFonts.roboto(
@@ -788,6 +1005,7 @@ class _SuperChatState extends State<SuperChat> {
                           ),
                           const Divider(color: Colors.white),
                           TextField(
+                            controller: _inputController,
                             decoration: InputDecoration(
                               hintText: "Enter your chat...",
                               hintStyle: GoogleFonts.roboto(
@@ -881,6 +1099,7 @@ class _SuperChatState extends State<SuperChat> {
                           ),
                           const Divider(color: Colors.white),
                           TextField(
+                            controller: _inputController,
                             decoration: InputDecoration(
                               hintText: "Enter your chat...",
                               hintStyle: GoogleFonts.roboto(
@@ -940,7 +1159,23 @@ class _SuperChatState extends State<SuperChat> {
                       fixedSize: MaterialStateProperty.all(Size(364.w, 33.h)),
                       backgroundColor:
                           MaterialStateProperty.all(const Color(0xFF001AFF))),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (_sliderValue / 25 == 0) {
+                      add10Chat(_inputController.text);
+                      _inputController.text = '';
+                    } else if (_sliderValue ~/ 25 == 1) {
+                      add20Chat();
+                    } else if (_sliderValue ~/ 25 == 2) {
+                      addOtherChats(const Duration(minutes: 1), _inputController.text);
+                    }
+                     else if (_sliderValue ~/ 25 == 3) {
+                      addOtherChats(const Duration(minutes: 10), _inputController.text);
+                    }
+                     else if (_sliderValue ~/ 25 == 4) {
+                      addOtherChats(const Duration(hours: 1), _inputController.text);
+                    }
+                    Navigator.pop(context);
+                  },
                   child: Text(
                     "Buy and Send",
                     style: GoogleFonts.roboto(
