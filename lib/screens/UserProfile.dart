@@ -33,15 +33,6 @@ class UserProfile extends StatelessWidget {
               fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.settings_outlined,
-                color: Colors.white,
-                size: 20.h,
-              ))
-        ],
       ),
       body: Body(
         user: _user,
@@ -173,50 +164,60 @@ class _BodyState extends State<Body> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Column(
-                      children: [
-                        Text(
-                          "14",
-                          style: GoogleFonts.roboto(
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          "Following",
-                          style: GoogleFonts.roboto(
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.white),
-                        ),
-                      ],
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/followers-following');
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            "14",
+                            style: GoogleFonts.roboto(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            "Following",
+                            style: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 20.w,
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          "38",
-                          style: GoogleFonts.roboto(
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.white),
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                        Text(
-                          "Followers",
-                          style: GoogleFonts.roboto(
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.white),
-                        ),
-                      ],
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/followers-following');
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            "38",
+                            style: GoogleFonts.roboto(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            "Followers",
+                            style: GoogleFonts.roboto(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 20.w,

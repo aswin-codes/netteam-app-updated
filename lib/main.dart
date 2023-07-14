@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:netteam/screens/AboutYou.dart';
 import 'package:netteam/screens/Chat.dart';
 import 'package:netteam/screens/Chatlist.dart';
+import 'package:netteam/screens/Followers-FollowinfDetails.dart';
 import 'package:netteam/screens/ForgotPassword.dart';
 import 'package:netteam/screens/Home.dart';
 import 'package:netteam/screens/Interests.dart';
@@ -91,7 +92,8 @@ class MyApp extends StatelessWidget {
             "/create" : (context) => CreateVideo(cameras: cameras,),
             "/search" : (context) => const Search(),
             "/userprofile" : (context) => const UserProfile(),
-            "/viewerslive" : (context) =>const ViewersLive()
+            "/viewerslive" : (context) =>const ViewersLive(),
+            "/followers-following" : (context) => FollowersFollowing(),
           },
         );
       },
